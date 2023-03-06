@@ -45,9 +45,9 @@ signal(semaphore Semaphore)
 /*declaration of global variables*/
 
 // Semaphores declared for accessing global variables
-Semaphore enter = new Semaphore(1);  // semaphore for assigning equal priority to readers and writers(for starve free)  
-Semaphore constraint = new Semaphore(1); // semaphore making sure that either only readers or only 1 writer are accessing data  
-Semaphore semaphore_for_writer = new Semaphore(0); // semaphore telling writer to write
+semaphore enter = new semaphore(1);  // semaphore for assigning equal priority to readers and writers(for starve free)  
+semaphore constraint = new semaphore(1); // semaphore making sure that either only readers or only 1 writer are accessing data  
+semaphore semaphore_for_writer = new semaphore(0); // semaphore telling writer to write
  
 int readers_currently_reading = 0;  // this indicates the number of readers who are currently reading 
 bool a_writer_is_waiting = false; // Indicates if a writer is waiting
