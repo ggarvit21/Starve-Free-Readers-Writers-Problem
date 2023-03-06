@@ -1,5 +1,5 @@
-# Semaphore Implementation
-
+ # Semaphore Implementation
+//implementing semaphore using struct
 struct semaphore {
     int s=1;
     
@@ -37,4 +37,4 @@ signal(semaphore Semaphore)
         wakeup(p);
     }
 }
-
+ 
