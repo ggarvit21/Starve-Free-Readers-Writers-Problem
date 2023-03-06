@@ -45,35 +45,38 @@ signal(semaphore Semaphore)
 /*declaration of global variables*/
 
 // Semaphores declared for accessing global variables
-semaphore enter = new semaphore(1);  // semaphore for assigning equal priority to readers and writers(for starve free)  
-semaphore constraint = new semaphore(1); // semaphore making sure that either only readers or only 1 writer are accessing data  
-semaphore semaphore_for_writer = new semaphore(0); // semaphore telling writer to write
+Semaphore enter = new Semaphore(1);  // semaphore for assigning equal priority to readers and writers(for starve free)  
+Semaphore semaphore_for_reader = new Semaphore(1); // semaphore for mutual exclusion of readers_currently_reading 
+Semaphore semaphore_for_writer = new Semaphore(0); // semaphore telling writer to write
  
-int readers_currently_reading = 0;  // this indicates the number of readers who are currently reading 
-bool a_writer_is_waiting = false; // Indicates if a writer is waiting
-
+int readers_currently_reading = 0;  // this indicates the number of readers who are currently reading  
 
 /* code for reader */
 while(1){
 
     // reader enters (Entry Section)
     enter.wait(process);
-    readers_currently_reading++;
-    enter.signal();
 
+    semaphore_for_reader.wait(process);
+    readers_currently_reading++;
+    if(readers_currently_reading==1){
+        semaphore_for_writer.wait(process); //if number of readers become more than zero then writer will have to wait
+    }
+    semaphore_for_reader.signal();
+
+    enter.signal();
     
         // Code for Reader reading data(i.e. , reader's critical section)
      
     
-    // Reader leaves (Exit Section)
-    constraint.wait(processID);
+    // Reader leaves (Exit Section) 
+    semaphore_for_reader.wait(process);
     readers_currently_reading--;
-    if(a_writer_is_waiting && readers_currently_reading == 0){
+    if(readers_currently_reading == 0){
         semaphore_for_writer.signal();
     }
-    constraint.signal();
+    semaphore_for_reader.signal();
 
-    // Remainder section 
 
 }
 
@@ -82,26 +85,19 @@ while(1){
 while(1){
 
     // Writer enters (Entry Section)
-    enter.wait(processID);
-    constraint.wait(processID);
-    if(readers_currently_reading == 0){
-        constraint.signal();
-    }
-    else{
-        a_writer_is_waiting = true;
-        constraint.signal();
-        semaphore_for_writer.wait();
-        a_writer_is_waiting = false;
-    }
+    enter.wait(process);
 
-     
+    semaphore_for_writer.wait(process);
+
+    enter.signal(); // since writer is entering its critical section it can signal the enter
+
+
      // Code for Writer accesses data (i.e. , writer's critical section)
      
 
 
    // Writer leaves (Exit Section)
-   enter.signal();
+   semaphore_for_writer.signal();
 
-   // Remainder Section
 
 } 
