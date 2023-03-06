@@ -44,10 +44,10 @@ signal(semaphore Semaphore)
 
 /*declaration of global variables*/
 
-// Semaphores declared for accessing global variables
-Semaphore enter = new Semaphore(1);  // semaphore for assigning equal priority to readers and writers(for starve free)  
-Semaphore semaphore_for_reader = new Semaphore(1); // semaphore for mutual exclusion of readers_currently_reading 
-Semaphore semaphore_for_writer = new Semaphore(0); // semaphore telling writer to write
+// Semaphores declaration
+semaphore enter = new semaphore(1);  // semaphore for assigning equal priority to readers and writers(for starve free)  
+semaphore semaphore_for_reader = new semaphore(1); // semaphore for mutual exclusion of readers_currently_reading 
+semaphore semaphore_for_writer = new semaphore(0); // semaphore telling writer to write
  
 int readers_currently_reading = 0;  // this indicates the number of readers who are currently reading  
 
