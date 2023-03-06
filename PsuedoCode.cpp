@@ -1,4 +1,6 @@
- # Semaphore Implementation
+
+/*Semaphore Implementation*/
+
 //implementing semaphore using struct
 struct semaphore {
     int s=1;
@@ -9,7 +11,7 @@ struct semaphore {
     
     
     semaphore(int n){
-      s=n;  // if there are n instances ( if an integer is passed in the constructor) 
+      s=n;  // if an integer is passed in the constructor initialize that to n
     }
     
     queue<process> blocked_process; //this queue will contain all the processes that will get blocked
@@ -38,3 +40,68 @@ signal(semaphore Semaphore)
     }
 }
  
+
+
+/*declaration of global variables*/
+
+// Semaphores declared for accessing global variables
+Semaphore enter = new Semaphore(1);  // semaphore for assigning equal priority to readers and writers(for starve free)  
+Semaphore constraint = new Semaphore(1); // semaphore making sure that either only readers or only 1 writer are accessing data  
+Semaphore semaphore_for_writer = new Semaphore(0); // semaphore telling writer to write
+ 
+int readers_currently_reading = 0;  // this indicates the number of readers who are currently reading 
+bool a_writer_is_waiting = false; // Indicates if a writer is waiting
+
+
+/* code for reader */
+while(1){
+
+    // reader enters (Entry Section)
+    enter.wait(process);
+    readers_currently_reading++;
+    enter.signal();
+
+    
+        // Code for Reader reading data(i.e. , reader's critical section)
+     
+    
+    // Reader leaves (Exit Section)
+    constraint.wait(processID);
+    readers_currently_reading--;
+    if(a_writer_is_waiting && readers_currently_reading == 0){
+        semaphore_for_writer.signal();
+    }
+    constraint.signal();
+
+    // Remainder section 
+
+}
+
+
+//writer
+while(1){
+
+    // Writer enters (Entry Section)
+    enter.wait(processID);
+    constraint.wait(processID);
+    if(readers_currently_reading == 0){
+        constraint.signal();
+    }
+    else{
+        a_writer_is_waiting = true;
+        constraint.signal();
+        semaphore_for_writer.wait();
+        a_writer_is_waiting = false;
+    }
+
+     
+     // Code for Writer accesses data (i.e. , writer's critical section)
+     
+
+
+   // Writer leaves (Exit Section)
+   enter.signal();
+
+   // Remainder Section
+
+} 
