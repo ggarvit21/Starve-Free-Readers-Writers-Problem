@@ -16,4 +16,8 @@ For readers writers problem there already exists classical solutions(that have b
 
 We are using the semaphore `enter` to ensure that niether reader nor writer are starved. It is done because by using `enter` we are ensuring that all readers and writers are being processed in the same order(like FIFO queue) as they are arrived and no one starves. While if `enter` was not used , it may have been possible that only one type of process (say reader) may have been processed continously and then the other type processes would have been starved(as we have seen in classical solution in classs).
 
-The semaphore `constraint` is used to ensure that either only readers or only one writer is accessing the data(critical section). It is done by using additional help of variables `readers_currently_reading` and `a_writer_is_waiting`. If the `constraint` is 1 and `readers_currently_reading` is 0 and `a_writer_is_waiting` is 1 then the semaphore `semaphore_for_writer` is signaled and writer accesses its critical section. Otherwise readers are accessing their critical section.
+The semaphore `semaphore_for_reader` is used to ensure that variable `readers_currently_reading` is modified by only one process at a time.
+
+Constraint of the problem is satisifed by using additional help of variable `readers_currently_reading`. If `readers_currently_reading` is 0 then the semaphore `semaphore_for_writer` is signaled and writer accesses its critical section. Otherwise when `readers_currently_waiting` becomes 1 `semaphore_for_writer` it is waited and the readers are accessing their critical section. 
+
+NOTE: `readers_currently_waiting` becoming 1  implies that some readers are accessing the data set and hence writer has to be waited. 
